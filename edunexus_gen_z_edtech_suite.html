@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNexus // High-Tech Gen-Z Learning Hub</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            accent: '#a855f7',
+                            neonPink: '#ff007f',
+                            neonCyan: '#00f3ff',
+                            neonGreen: '#00ff66',
+                            darkBg: '#090d16',
+                            cardBg: 'rgba(17, 24, 39, 0.7)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { boxShadow: '0 0 10px #00f3ff, 0 0 20px #00f3ff' },
+                            '100%': { boxShadow: '0 0 20px #ff007f, 0 0 30px #ff007f' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Phosphor Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Three.js for 3D Visualizer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tone.js for Lo-Fi Sound Synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #060911;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 243, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 243, 255, 0.15);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+        }
+        .neon-text-pink {
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
+        }
+        .neon-border {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 9999px;
+            border: 2px solid #090d16;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        .gradient-bg-1 {
+            background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg-1 text-slate-100 flex flex-col selection:bg-brand-neonCyan selection:text-black">
+
+    <!-- TOP NAVIGATION -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-800 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-neonCyan via-brand-500 to-brand-neonPink p-0.5 flex items-center justify-center animate-pulse-slow">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid font-black fa-bolt text-brand-neonCyan text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">
+                        EDUNEXUS<span class="text-xs text-brand-neonCyan ml-1 px-1.5 py-0.5 rounded border border-cyan-500/30">v4.0</span>
+                    </span>
+                    <p class="text-[10px] font-mono text-slate-400 tracking-widest hidden sm:block">NEXT-GEN HIGH-TECH ACADEMY</p>
+                </div>
+            </div>
+
+            <!-- Class & Stream Selectors -->
+            <div class="hidden md:flex items-center space-x-3 glass-panel px-3 py-1.5 rounded-full border border-slate-700/50">
+                <i class="fa-solid fa-graduation-cap text-brand-accent text-sm"></i>
+                <select id="globalClassSelect" onchange="handleClassChange(this.value)" class="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer">
+                    <option value="9" class="bg-slate-900">Class 9 (Foundations)</option>
+                    <option value="10" class="bg-slate-900">Class 10 (Board Prep)</option>
+                    <option value="11" selected class="bg-slate-900">Class 11 (Senior Sec)</option>
+                    <option value="12" class="bg-slate-900">Class 12 (Target Boards/Competitive)</option>
+                </select>
+                <span class="text-slate-600">|</span>
+                <select id="globalStreamSelect" onchange="handleStreamChange(this.value)" class="bg-transparent text-xs font-semibold text-brand-neonCyan focus:outline-none cursor-pointer">
+                    <option value="pcm" class="bg-slate-900">PCM (Physics, Chem, Math)</option>
+                    <option value="pcb" class="bg-slate-900">PCB (Physics, Chem, Bio)</option>
+                    <option value="commerce" class="bg-slate-900">Commerce (Math/Accounts)</option>
+                    <option value="arts" class="bg-slate-900">Arts / Humanities</option>
+                </select>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center space-x-3">
+                <!-- Streak Badge -->
+                <div class="flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full" title="Current Daily Streak">
+                    <i class="fa-solid fa-fire text-amber-400 animate-bounce"></i>
+                    <span class="text-xs font-bold text-amber-300" id="streakCount">14 Days</span>
+                </div>
+
+                <!-- XP Points -->
+                <div class="hidden sm:flex items-center space-x-1.5 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1.5 rounded-full" title="XP Earned">
+                    <i class="fa-solid fa-gem text-indigo-400"></i>
+                    <span class="text-xs font-bold text-indigo-300" id="xpCount">3,850 XP</span>
+                </div>
+
+                <!-- AI Quick Trigger -->
+                <button onclick="toggleAiModal()" class="relative group bg-gradient-to-r from-brand-neonCyan to-brand-500 p-0.5 rounded-full text-xs font-bold text-slate-950 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20">
+                    <span class="flex items-center space-x-2 bg-slate-950 text-white px-3 py-1.5 rounded-full group-hover:bg-transparent group-hover:text-slate-950 transition-all">
+                        <i class="fa-solid fa-robot text-brand-neonCyan group-hover:text-slate-950"></i>
+                        <span class="hidden sm:inline">AI Tutor</span>
+                    </span>
+                </button>
+
+                <!-- Profile Avatar -->
+                <div class="w-9 h-9 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 p-0.5 cursor-pointer" onclick="openModal('profileModal')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-full h-full object-cover rounded-full">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Class Bar -->
+    <div class="md:hidden glass-panel px-4 py-2 flex items-center justify-between border-b border-slate-800 text-xs">
+        <div class="flex items-center space-x-2">
+            <span class="text-slate-400">Target:</span>
+            <select id="mobileClassSelect" onchange="handleClassChange(this.value)" class="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-brand-neonCyan font-medium">
+                <option value="9">Class 9</option>
+                <option value="10">Class 10</option>
+                <option value="11" selected>Class 11</option>
+                <option value="12">Class 12</option>
+            </select>
+            <select id="mobileStreamSelect" onchange="handleStreamChange(this.value)" class="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-amber-300 font-medium">
+                <option value="pcm">PCM</option>
+                <option value="pcb">PCB</option>
+                <option value="commerce">Commerce</option>
+                <option value="arts">Arts</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="lg:w-64 flex-shrink-0">
+            <nav class="glass-panel rounded-2xl p-3 sticky top-24 space-y-1">
+                <div class="px-3 py-2 text-[11px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Core Modules</div>
+                
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-chart-line w-5"></i>
+                    <span>Dashboard</span>
+                </button>
+
+                <button onclick="switchTab('schedule')" id="nav-schedule" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-calendar-days w-5 text-brand-neonCyan"></i>
+                    <span>Live Schedule</span>
+                    <span class="ml-auto text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-bold uppercase animate-pulse">Live</span>
+                </button>
+
+                <button onclick="switchTab('practice')" id="nav-practice" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-vial-circle-check w-5 text-amber-400"></i>
+                    <span>Test Lab & Quiz</span>
+                </button>
+
+                <button onclick="switchTab('resources')" id="nav-resources" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-folder-open w-5 text-emerald-400"></i>
+                    <span>Resource Vault</span>
+                </button>
+
+                <button onclick="switchTab('visualizer')" id="nav-visualizer" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-cube w-5 text-brand-neonPink"></i>
+                    <span>3D Concept Lab</span>
+                </button>
+
+                <button onclick="switchTab('community')" id="nav-community" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-comments w-5 text-violet-400"></i>
+                    <span>Gen-Z Forum</span>
+                </button>
+
+                <div class="pt-4 border-t border-slate-800 mt-4 px-3 py-2 text-[11px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Study Utility</div>
+
+                <button onclick="openModal('pomodoroModal')" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-medium bg-slate-800/40 text-slate-300 hover:bg-slate-800 transition-all">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                        <span>Pomodoro & Lo-Fi</span>
+                    </span>
+                    <span id="pomoSidebarTime" class="font-mono text-amber-400">25:00</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- DYNAMIC CONTENT CONTAINER -->
+        <main class="flex-1 min-w-0">
+
+            <!-- ================= TAB 1: DASHBOARD ================= -->
+            <div id="tab-dashboard-content" class="tab-content space-y-6">
+                <!-- Welcome Banner -->
+                <div class="relative overflow-hidden glass-panel rounded-3xl p-6 lg:p-8 border border-brand-500/30">
+                    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-neonCyan/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="space-y-2">
+                            <span class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-neonCyan border border-brand-500/30 text-xs font-mono font-bold uppercase tracking-wider">
+                                Class <span id="dashClassLabel">11</span> • <span id="dashStreamLabel">PCM</span> Target
+                            </span>
+                            <h1 class="text-2xl lg:text-3xl font-black tracking-tight text-white">
+                                Ready to crush today's goals, <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-neonCyan to-brand-neonPink">Alex?</span> 🚀
+                            </h1>
+                            <p class="text-xs lg:text-sm text-slate-300 max-w-xl">
+                                You have 2 live interactive sessions coming up. Your weekly mock test accuracy is up by <span class="text-brand-neonGreen font-bold">+14.2%</span>.
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="openModal('aiModal')" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 font-bold text-slate-950 hover:opacity-90 transition-all shadow-lg shadow-cyan-500/20 text-xs sm:text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Ask AI Assistant</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-card rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-mono">ATTENDANCE</span>
+                            <i class="fa-solid fa-circle-check text-brand-neonGreen"></i>
+                        </div>
+                        <div class="text-2xl font-black text-white">94%</div>
+                        <p class="text-[10px] text-slate-400">18/19 Classes Attended</p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-mono">AVG. SCORE</span>
+                            <i class="fa-solid fa-trophy text-amber-400"></i>
+                        </div>
+                        <div class="text-2xl font-black text-white">88.5%</div>
+                        <p class="text-[10px] text-emerald-400">Rank #4 in Batch</p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-mono">TESTS DONE</span>
+                            <i class="fa-solid fa-pen-nib text-brand-neonCyan"></i>
+                        </div>
+                        <div class="text-2xl font-black text-white">27</div>
+                        <p class="text-[10px] text-slate-400">+3 this week</p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-mono">STUDY HOURS</span>
+                            <i class="fa-solid fa-clock text-brand-neonPink"></i>
+                        </div>
+                        <div class="text-2xl font-black text-white">42.8h</div>
+                        <p class="text-[10px] text-slate-400">This Month</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Charts & Upcoming Live Schedule -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Performance Chart -->
+                    <div class="lg:col-span-2 glass-panel rounded-3xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sm text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-simple text-brand-neonCyan"></i>
+                                <span>Subject Mastery Radar</span>
+                            </h3>
+                            <span class="text-[10px] font-mono text-slate-400">Real-Time Data</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Today Widget -->
+                    <div class="glass-panel rounded-3xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sm text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-bolt text-amber-400"></i>
+                                <span>Next Live Class</span>
+                            </h3>
+                            <span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded-full">UPCOMING</span>
+                        </div>
+
+                        <!-- Class Card -->
+                        <div class="glass-card rounded-2xl p-4 border-l-4 border-l-brand-neonCyan space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-brand-neonCyan" id="dashNextSubject">Physics 3D</span>
+                                <span class="text-[10px] font-mono text-slate-400" id="dashNextTime">Starts in 14m</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-white" id="dashNextTopic">Electromagnetic Induction & Faraday Laws</h4>
+                            <p class="text-xs text-slate-400">Instructor: Dr. Vikram Sethi (IIT Delhi)</p>
+                            
+                            <div class="pt-2 flex items-center justify-between">
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[9px] font-bold">A</div>
+                                    <div class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-[9px] font-bold">K</div>
+                                    <div class="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-[9px] font-bold">+18</div>
+                                </div>
+                                <button onclick="openLiveClassModal('Physics: Electromagnetic Induction')" class="px-3 py-1.5 rounded-lg bg-brand-neonCyan text-slate-950 font-bold text-xs hover:bg-cyan-300 transition-all">
+                                    Join Room <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Tasks -->
+                        <div class="space-y-2 pt-2">
+                            <span class="text-xs font-mono text-slate-400 uppercase">Daily Quests</span>
+                            <div class="space-y-1.5">
+                                <label class="flex items-center space-x-2 text-xs text-slate-300 bg-slate-900/50 p-2 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                                    <input type="checkbox" checked class="rounded border-slate-700 text-brand-500 focus:ring-0">
+                                    <span class="line-through text-slate-500">Complete 10 Calculus Practice MCQs</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-xs text-slate-300 bg-slate-900/50 p-2 rounded-lg cursor-pointer hover:bg-slate-800/50">
+                                    <input type="checkbox" class="rounded border-slate-700 text-brand-500 focus:ring-0">
+                                    <span>Download Organic Chem Reactions PDF</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 2: LIVE SCHEDULE ================= -->
+            <div id="tab-schedule-content" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-black text-white">Interactive Class Schedule</h2>
+                        <p class="text-xs text-slate-400">Class <span class="currentClassDisplay">11</span> Timetable & Live Broadcast Streams</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="filterSchedule('all')" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-800 text-slate-200 hover:bg-slate-700">All</button>
+                        <button onclick="filterSchedule('today')" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-brand-500 text-white">Today</button>
+                    </div>
+                </div>
+
+                <!-- Schedule List -->
+                <div class="space-y-4" id="scheduleContainer">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: PRACTICE & MOCK TESTS ================= -->
+            <div id="tab-practice-content" class="tab-content hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-6 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-brand-neonCyan uppercase font-bold">Adaptive Test Generator</span>
+                            <h2 class="text-xl font-black text-white">Class <span class="currentClassDisplay">11</span> Practice Arena</h2>
+                            <p class="text-xs text-slate-400">AI-customized quiz sessions based on your target syllabus.</p>
+                        </div>
+                        <button onclick="startInstantTest()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs hover:opacity-90 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-bolt"></i>
+                            <span>Quick 5-Min Quiz</span>
+                        </button>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                        <select id="testSubjectFilter" onchange="renderTests()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
+                            <option value="all">All Subjects</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Biology">Biology</option>
+                        </select>
+                        <select id="testDifficultyFilter" onchange="renderTests()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
+                            <option value="all">All Difficulties</option>
+                            <option value="Easy">Beginner</option>
+                            <option value="Medium">Medium Board Level</option>
+                            <option value="Hard">Advanced / Competitive</option>
+                        </select>
+                        <input type="text" id="testSearch" onkeyup="renderTests()" placeholder="Search topics..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-neonCyan">
+                    </div>
+                </div>
+
+                <!-- Test Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="testCardsGrid">
+                    <!-- Dynamic Test Cards -->
+                </div>
+            </div>
+
+            <!-- ================= TAB 4: RESOURCE VAULT ================= -->
+            <div id="tab-resources-content" class="tab-content hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-6 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-emerald-400 uppercase font-bold">Free Downloads Vault</span>
+                            <h2 class="text-xl font-black text-white">Class <span class="currentClassDisplay">11</span> Study Assets</h2>
+                            <p class="text-xs text-slate-400">Download PYQs, Formula Sheets, Hand-written Notes & Mindmaps.</p>
+                        </div>
+                    </div>
+
+                    <!-- Category Pills -->
+                    <div class="flex flex-wrap gap-2 pt-2" id="resourceCategoryPills">
+                        <button onclick="filterResources('all')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-500 text-white">All Files</button>
+                        <button onclick="filterResources('pyq')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700">PYQs (Past 10 Yrs)</button>
+                        <button onclick="filterResources('formula')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700">Formula Sheets</button>
+                        <button onclick="filterResources('notes')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700">Handwritten Notes</button>
+                    </div>
+                </div>
+
+                <!-- Resource List Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="resourceGrid">
+                    <!-- Dynamic Resources -->
+                </div>
+            </div>
+
+            <!-- ================= TAB 5: 3D CONCEPT LAB ================= -->
+            <div id="tab-visualizer-content" class="tab-content hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-6 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-brand-neonPink uppercase font-bold">WebGL Physics & Bio Engine</span>
+                            <h2 class="text-xl font-black text-white">Interactive 3D Simulation Lab</h2>
+                            <p class="text-xs text-slate-400">Rotate, zoom, and interact with complex 3D concepts in real time.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="load3DModel('atom')" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-xs font-bold text-white hover:bg-indigo-500">Atomic Structure</button>
+                            <button onclick="load3DModel('cube')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">Crystal Lattice</button>
+                            <button onclick="load3DModel('wave')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">Wave Dynamics</button>
+                        </div>
+                    </div>
+
+                    <!-- 3D Canvas Box -->
+                    <div class="relative w-full h-96 rounded-2xl overflow-hidden border border-slate-700/60 bg-slate-950">
+                        <canvas id="threeCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+                        
+                        <!-- HUD Overlay Controls -->
+                        <div class="absolute bottom-4 left-4 glass-panel p-3 rounded-xl border border-slate-700/50 text-xs space-y-1">
+                            <div class="font-bold text-brand-neonCyan" id="modelTitle">Bohr's Atomic Model</div>
+                            <p class="text-[11px] text-slate-400">Drag mouse to orbit camera • Scroll to zoom</p>
+                        </div>
+
+                        <div class="absolute top-4 right-4 flex flex-col space-y-2">
+                            <button onclick="toggle3DRotation()" class="p-2.5 rounded-xl glass-panel text-white hover:text-brand-neonCyan text-xs" title="Toggle Auto Rotation">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 6: GEN-Z COMMUNITY FORUM ================= -->
+            <div id="tab-community-content" class="tab-content hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-6 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono text-violet-400 uppercase font-bold">Gen-Z Student Lounge</span>
+                            <h2 class="text-xl font-black text-white">Community & Doubt Solving</h2>
+                            <p class="text-xs text-slate-400">Ask doubts, share meme notes, and study with peers across the country.</p>
+                        </div>
+                        <button onclick="openModal('newPostModal')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-xs text-white hover:opacity-90 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Ask Doubt / Post</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Posts Stream -->
+                <div class="space-y-4" id="communityPostsContainer">
+                    <!-- Dynamic Posts -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODALS SECTION -->
+
+    <!-- 1. AI TUTOR MODAL -->
+    <div id="aiModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-2xl w-full flex flex-col h-[600px] border border-brand-neonCyan/30 shadow-2xl relative overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-xl bg-brand-neonCyan/20 flex items-center justify-center border border-brand-neonCyan/40 text-brand-neonCyan">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Nexus AI 4.0 Assistant</h3>
+                        <p class="text-[10px] text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span> Context Aware for Class <span class="currentClassDisplay ml-0.5">11</span></p>
+                    </div>
+                </div>
+                <button onclick="closeModal('aiModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Chat Output -->
+            <div class="flex-1 p-4 overflow-y-auto space-y-3" id="aiChatMessages">
+                <div class="flex space-x-3 max-w-[85%]">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs text-white shrink-0">AI</div>
+                    <div class="bg-slate-800/80 p-3 rounded-2xl text-xs text-slate-200 border border-slate-700/50">
+                        Hey Alex! I'm your Nexus AI Tutor. Need help solving a physics numerical, drafting notes, or generating flashcards for Class <span class="currentClassDisplay">11</span>? Fire away! 🔥
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center space-x-2">
+                <input type="text" id="aiInput" onkeypress="if(event.key === 'Enter') sendAiMessage()" placeholder="Ask anything e.g. 'Explain Lenz Law simply'..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-neonCyan">
+                <button onclick="sendAiMessage()" class="px-4 py-2 bg-brand-neonCyan text-slate-950 font-bold text-xs rounded-xl hover:bg-cyan-300">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. QUIZ RUNNER MODAL -->
+    <div id="quizModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-xl w-full p-6 border border-amber-500/30 relative">
+            <button onclick="closeModal('quizModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            
+            <div id="quizContainer">
+                <!-- Dynamic Quiz Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. LIVE CLASS BROADCAST MODAL -->
+    <div id="liveClassModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-4xl w-full overflow-hidden border border-cyan-500/30 flex flex-col md:flex-row h-[550px]">
+            <!-- Video Player Simulation -->
+            <div class="flex-1 bg-black relative flex items-center justify-center">
+                <div class="text-center space-y-3">
+                    <div class="w-16 h-16 rounded-full bg-red-600/20 text-red-500 border border-red-500 flex items-center justify-center mx-auto animate-pulse">
+                        <i class="fa-solid fa-play text-2xl"></i>
+                    </div>
+                    <h4 class="text-sm font-bold text-white" id="liveModalTitle">Physics: Electromagnetic Induction</h4>
+                    <span class="text-xs bg-red-600 text-white font-bold px-2.5 py-0.5 rounded-full">LIVE BROADCAST</span>
+                </div>
+                <div class="absolute top-4 left-4 glass-panel px-3 py-1 rounded-full text-[11px] text-white flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                    <span>1,240 Students Watching</span>
+                </div>
+            </div>
+
+            <!-- Live Chat -->
+            <div class="w-full md:w-80 bg-slate-900 flex flex-col border-l border-slate-800">
+                <div class="p-3 border-b border-slate-800 font-bold text-xs text-slate-200">Live Chat</div>
+                <div class="flex-1 p-3 overflow-y-auto space-y-2 text-xs" id="liveChatMessages">
+                    <p><span class="font-bold text-pink-400">Rohan:</span> Sir will this come in board exam?</p>
+                    <p><span class="font-bold text-cyan-400">Ananya:</span> Got it! Super clear definition!</p>
+                </div>
+                <div class="p-2 border-t border-slate-800 flex space-x-2">
+                    <input type="text" id="liveChatInput" onkeypress="if(event.key === 'Enter') sendLiveChatMessage()" placeholder="Ask instructor..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white">
+                    <button onclick="sendLiveChatMessage()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. POMODORO & LO-FI MODAL -->
+    <div id="pomodoroModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-6 text-center border border-amber-500/30 relative space-y-6">
+            <button onclick="closeModal('pomodoroModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+            <h3 class="font-black text-lg text-white flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                <span>Focus Pomodoro & Sound Synth</span>
+            </h3>
+
+            <!-- Timer Display -->
+            <div class="text-6xl font-black font-mono text-amber-400 my-4 tracking-tight" id="pomoDisplay">
+                25:00
+            </div>
+
+            <!-- Timer Controls -->
+            <div class="flex justify-center space-x-3">
+                <button onclick="togglePomodoroTimer()" id="pomoStartBtn" class="px-6 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs hover:bg-amber-300">
+                    START FOCUS
+                </button>
+                <button onclick="resetPomodoroTimer()" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">
+                    RESET
+                </button>
+            </div>
+
+            <!-- Ambient Sound Generator -->
+            <div class="pt-4 border-t border-slate-800 space-y-3">
+                <div class="text-xs font-mono text-slate-400 uppercase">Synthesized Lo-Fi Ambience</div>
+                <div class="flex justify-center space-x-2">
+                    <button onclick="toggleAudio('rain')" id="audioBtnRain" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-300 hover:border-brand-neonCyan">🌧️ Rain</button>
+                    <button onclick="toggleAudio('space')" id="audioBtnSpace" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-300 hover:border-brand-neonCyan">🚀 Cosmic Drone</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. NEW COMMUNITY POST MODAL -->
+    <div id="newPostModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-6 border border-violet-500/30 relative space-y-4">
+            <button onclick="closeModal('newPostModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+            <h3 class="font-bold text-white text-base">Ask a Doubt / Post Note</h3>
+
+            <input type="text" id="postTitleInput" placeholder="Title (e.g. Need help with Integration trick)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-violet-500">
+            <textarea id="postContentInput" rows="4" placeholder="Type your doubt or explanation..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-violet-500"></textarea>
+
+            <button onclick="submitNewPost()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-xs text-white">Publish to Community</button>
+        </div>
+    </div>
+
+    <!-- 6. PROFILE MODAL -->
+    <div id="profileModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-6 border border-slate-700 relative text-center space-y-4">
+            <button onclick="closeModal('profileModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+            <div class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 p-1 mx-auto">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-full h-full object-cover rounded-full">
+            </div>
+
+            <div>
+                <h3 class="font-black text-lg text-white">Alex Morgan</h3>
+                <p class="text-xs text-brand-neonCyan font-mono">Class <span class="currentClassDisplay">11</span> • PCM Stream</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2 text-left">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 font-mono">STREAK</span>
+                    <div class="font-bold text-amber-400">14 Days 🔥</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 font-mono">TOTAL XP</span>
+                    <div class="font-bold text-indigo-400">3,850 XP 💎</div>
+                </div>
+            </div>
+
+            <button onclick="alert('Profile Settings saved successfully!')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-xl">Save Preferences</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Global Application State
+        let currentClass = "11";
+        let currentStream = "pcm";
+        let activeTab = "dashboard";
+
+        // Mock Database by Class & Stream
+        const db = {
+            schedules: {
+                "11": [
+                    { id: 1, subject: "Physics", title: "Electromagnetic Induction & Faraday Laws", time: "Today • 04:00 PM", instructor: "Dr. Vikram Sethi", status: "upcoming", stream: "pcm" },
+                    { id: 2, subject: "Mathematics", title: "Definite Integration & Area Under Curves", time: "Today • 06:00 PM", instructor: "Prof. Priya Nair", status: "upcoming", stream: "pcm" },
+                    { id: 3, subject: "Chemistry", title: "Organic Mechanism: Electrophilic Substitution", time: "Tomorrow • 10:00 AM", instructor: "Dr. A. Sharma", status: "scheduled", stream: "pcm" },
+                    { id: 4, subject: "Biology", title: "Genetics & DNA Replication Mechanics", time: "Today • 05:00 PM", instructor: "Dr. S. Mukherjee", status: "upcoming", stream: "pcb" }
+                ],
+                "12": [
+                    { id: 5, subject: "Physics", title: "Wave Optics & Young's Double Slit", time: "Today • 03:00 PM", instructor: "Dr. Vikram Sethi", status: "upcoming", stream: "pcm" },
+                    { id: 6, subject: "Accountancy", title: "Partnership Dissolution & Balance Sheets", time: "Tomorrow • 11:00 AM", instructor: "CA Rajesh Gupta", status: "scheduled", stream: "commerce" }
+                ],
+                "10": [
+                    { id: 7, subject: "Science", title: "Light: Reflection & Refraction Numericals", time: "Today • 05:00 PM", instructor: "Ankita Rao", status: "upcoming", stream: "all" },
+                    { id: 8, subject: "Mathematics", title: "Quadratic Equations Masterclass", time: "Tomorrow • 04:00 PM", instructor: "Prof. Priya Nair", status: "scheduled", stream: "all" }
+                ],
+                "9": [
+                    { id: 9, subject: "Physics", title: "Laws of Motion & Momentum Conservation", time: "Today • 04:30 PM", instructor: "Ankita Rao", status: "upcoming", stream: "all" }
+                ]
+            },
+            tests: {
+                "11": [
+                    { id: 101, title: "Calculus & Limits Sprint Test", subject: "Mathematics", questionsCount: 15, duration: "20 mins", difficulty: "Medium", stream: "pcm" },
+                    { id: 102, title: "Rotational Dynamics & Mechanics", subject: "Physics", questionsCount: 20, duration: "30 mins", difficulty: "Hard", stream: "pcm" },
+                    { id: 103, title: "Chemical Bonding & Molecular Structure", subject: "Chemistry", questionsCount: 10, duration: "15 mins", difficulty: "Easy", stream: "pcm" },
+                    { id: 104, title: "Human Physiology & Neural Control", subject: "Biology", questionsCount: 20, duration: "25 mins", difficulty: "Medium", stream: "pcb" }
+                ],
+                "12": [
+                    { id: 201, title: "Electrostatics Board Mock 01", subject: "Physics", questionsCount: 25, duration: "45 mins", difficulty: "Hard", stream: "pcm" }
+                ],
+                "10": [
+                    { id: 301, title: "Class 10 Board Science Quiz", subject: "Science", questionsCount: 15, duration: "20 mins", difficulty: "Medium", stream: "all" }
+                ],
+                "9": [
+                    { id: 401, title: "Number Systems Practice Check", subject: "Mathematics", questionsCount: 10, duration: "15 mins", difficulty: "Easy", stream: "all" }
+                ]
+            },
+            resources: [
+                { id: 1, title: "JEE/Board Physics Formula Sheet 2026", type: "formula", subject: "Physics", size: "2.4 MB", downloads: "1.4k" },
+                { id: 2, title: "Class 11 Chemistry Organic Reaction Roadmap", type: "notes", subject: "Chemistry", size: "5.1 MB", downloads: "3.2k" },
+                { id: 3, title: "Last 10 Years Solved Chapterwise PYQs", type: "pyq", subject: "Mathematics", size: "12.8 MB", downloads: "8.9k" },
+                { id: 4, title: "NCERT Biology Mindmaps High-Res PDF", type: "notes", subject: "Biology", size: "8.3 MB", downloads: "4.1k" }
+            ],
+            communityPosts: [
+                { id: 1, author: "Aarav_PCM", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80", title: "Trick to memorize Electrostatic field formulas easily?", tag: "Physics", upvotes: 42, comments: 8, time: "2h ago" },
+                { id: 2, author: "Sneha_Class11", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80", title: "Shared my handwritten Integration notes! Hope it helps guys 🚀", tag: "Maths Notes", upvotes: 89, comments: 14, time: "5h ago" }
+            ]
+        };
+
+        // Initialize Dashboard Chart
+        let chartInstance = null;
+
+        window.onload = function() {
+            initChart();
+            init3DLab();
+            renderAllViews();
+        };
+
+        function handleClassChange(val) {
+            currentClass = val;
+            document.querySelectorAll('.currentClassDisplay').forEach(el => el.textContent = val);
+            document.getElementById('dashClassLabel').textContent = val;
+            document.getElementById('globalClassSelect').value = val;
+            document.getElementById('mobileClassSelect').value = val;
+            renderAllViews();
+        }
+
+        function handleStreamChange(val) {
+            currentStream = val;
+            document.getElementById('dashStreamLabel').textContent = val.toUpperCase();
+            document.getElementById('globalStreamSelect').value = val;
+            document.getElementById('mobileStreamSelect').value = val;
+            renderAllViews();
+        }
+
+        function switchTab(tabId) {
+            activeTab = tabId;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if (targetNav) targetNav.classList.add('active');
+
+            const targetContent = document.getElementById(`tab-${tabId}-content`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            if (tabId === 'visualizer') {
+                setTimeout(() => onWindowResize(), 100);
+            }
+        }
+
+        function renderAllViews() {
+            renderSchedule();
+            renderTests();
+            renderResources();
+            renderCommunity();
+        }
+
+        // Render Schedule Component
+        function renderSchedule() {
+            const container = document.getElementById('scheduleContainer');
+            const items = db.schedules[currentClass] || db.schedules["11"];
+            
+            if (items.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 py-8">No live classes scheduled for this stream currently.</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="glass-card rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-brand-neonCyan border border-indigo-500/30 flex items-center justify-center shrink-0">
+                            <i class="fa-solid ${item.subject === 'Physics' ? 'fa-atom' : item.subject === 'Mathematics' ? 'fa-calculator' : 'fa-flask'} text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-bold text-brand-neonCyan">${item.subject}</span>
+                                <span class="text-slate-600">•</span>
+                                <span class="text-xs font-mono text-slate-400">${item.time}</span>
+                            </div>
+                            <h3 class="font-bold text-white text-base mt-1">${item.title}</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Instructor: ${item.instructor}</p>
+                        </div>
+                    </div>
+                    <button onclick="openLiveClassModal('${item.subject}: ${item.title}')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-neonCyan to-indigo-600 text-slate-950 font-black text-xs hover:opacity-90 transition-all shrink-0">
+                        Join Stream <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Render Practice Tests Component
+        function renderTests() {
+            const container = document.getElementById('testCardsGrid');
+            const items = db.tests[currentClass] || db.tests["11"];
+            const subjectFilter = document.getElementById('testSubjectFilter').value;
+
+            const filtered = items.filter(t => subjectFilter === 'all' || t.subject === subjectFilter);
+
+            container.innerHTML = filtered.map(t => `
+                <div class="glass-card rounded-2xl p-5 space-y-4 border border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-mono font-bold px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t.subject}</span>
+                        <span class="text-[10px] font-mono text-amber-400">${t.difficulty}</span>
+                    </div>
+                    <h3 class="font-bold text-white text-sm leading-snug">${t.title}</h3>
+                    <div class="flex items-center justify-between text-xs text-slate-400 font-mono">
+                        <span><i class="fa-solid fa-list-check mr-1"></i> ${t.questionsCount} Qs</span>
+                        <span><i class="fa-solid fa-stopwatch mr-1"></i> ${t.duration}</span>
+                    </div>
+                    <button onclick="launchQuiz('${t.title}')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-brand-500 hover:text-white font-bold text-xs text-slate-200 transition-all border border-slate-700">
+                        Start Practice Test
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Render Resources
+        function renderResources() {
+            const container = document.getElementById('resourceGrid');
+            container.innerHTML = db.resources.map(r => `
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-slate-800">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-file-pdf text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">${r.title}</h4>
+                            <p class="text-[10px] font-mono text-slate-400">${r.subject} • ${r.size} • ${r.downloads} downloads</p>
+                        </div>
+                    </div>
+                    <button onclick="downloadResource('${r.title}')" class="p-2.5 rounded-xl bg-slate-800 hover:bg-emerald-500 text-slate-300 hover:text-slate-950 transition-all">
+                        <i class="fa-solid fa-download text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function filterResources(type) {
+            alert(`Filtering files by category: ${type.toUpperCase()}`);
+        }
+
+        function downloadResource(title) {
+            alert(`⚡ Download started: "${title}" (Simulated PDF download)`);
+        }
+
+        // Render Community Posts
+        function renderCommunity() {
+            const container = document.getElementById('communityPostsContainer');
+            container.innerHTML = db.communityPosts.map(p => `
+                <div class="glass-card rounded-2xl p-5 space-y-3 border border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="${p.avatar}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs text-white">${p.author}</h4>
+                                <span class="text-[10px] text-slate-400 font-mono">${p.time}</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-slate-800 text-violet-300 px-2.5 py-0.5 rounded-full border border-slate-700">${p.tag}</span>
+                    </div>
+                    <p class="text-xs text-slate-200 font-medium">${p.title}</p>
+                    <div class="flex items-center space-x-4 pt-2 border-t border-slate-800/60 text-xs text-slate-400">
+                        <button onclick="upvotePost(${p.id})" class="flex items-center space-x-1.5 hover:text-brand-neonCyan">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <span id="upvotes-${p.id}">${p.upvotes}</span>
+                        </button>
+                        <button class="flex items-center space-x-1.5 hover:text-brand-neonPink">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>${p.comments} Replies</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function upvotePost(id) {
+            const el = document.getElementById(`upvotes-${id}`);
+            el.textContent = parseInt(el.textContent) + 1;
+        }
+
+        function submitNewPost() {
+            const title = document.getElementById('postTitleInput').value;
+            if (!title) return alert("Please enter a title!");
+
+            db.communityPosts.unshift({
+                id: Date.now(),
+                author: "You (Alex)",
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+                title: title,
+                tag: "General Doubt",
+                upvotes: 1,
+                comments: 0,
+                time: "Just now"
+            });
+
+            closeModal('newPostModal');
+            document.getElementById('postTitleInput').value = '';
+            document.getElementById('postContentInput').value = '';
+            renderCommunity();
+        }
+
+        // Chart Initialization
+        function initChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Physics', 'Chemistry', 'Mathematics', 'Problem Speed', 'Mock Accuracy', 'Attendance'],
+                    datasets: [{
+                        label: 'Current Mastery %',
+                        data: [88, 75, 92, 80, 85, 94],
+                        backgroundColor: 'rgba(0, 243, 255, 0.2)',
+                        borderColor: '#00f3ff',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ff007f'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                            ticks: { display: false, max: 100 }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 3D Concept Lab Logic
+        let scene, camera, renderer, currentMesh;
+        let autoRotate = true;
+
+        function init3DLab() {
+            const canvas = document.getElementById('threeCanvas');
+            const width = canvas.parentElement.clientWidth;
+            const height = canvas.parentElement.clientHeight;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(width, height);
+
+            // Lighting
+            const light = new THREE.PointLight(0x00f3ff, 2, 100);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+            load3DModel('atom');
+            animate3D();
+        }
+
+        function load3DModel(type) {
+            if (currentMesh) scene.remove(currentMesh);
+
+            const group = new THREE.Group();
+
+            if (type === 'atom') {
+                document.getElementById('modelTitle').textContent = "Bohr's Atomic Structure Lab";
+                const nucleusGeo = new THREE.SphereGeometry(0.6, 32, 32);
+                const nucleusMat = new THREE.MeshStandardMaterial({ color: 0xff007f, wireframe: true });
+                const nucleus = new THREE.Mesh(nucleusGeo, nucleusMat);
+                group.add(nucleus);
+
+                // Orbit Rings
+                for (let i = 1; i <= 3; i++) {
+                    const ringGeo = new THREE.TorusGeometry(i * 0.9, 0.02, 16, 100);
+                    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.rotation.x = Math.PI / (i + 1);
+                    group.add(ring);
+                }
+            } else if (type === 'cube') {
+                document.getElementById('modelTitle').textContent = "Crystal Lattice Structure";
+                const geo = new THREE.BoxGeometry(2, 2, 2);
+                const mat = new THREE.MeshStandardMaterial({ color: 0x6366f1, wireframe: true });
+                group.add(new THREE.Mesh(geo, mat));
+            } else {
+                document.getElementById('modelTitle').textContent = "Wave Interference Function";
+                const geo = new THREE.IcosahedronGeometry(2, 2);
+                const mat = new THREE.MeshStandardMaterial({ color: 0x00ff66, wireframe: true });
+                group.add(new THREE.Mesh(geo, mat));
+            }
+
+            currentMesh = group;
+            scene.add(currentMesh);
+        }
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            if (currentMesh && autoRotate) {
+                currentMesh.rotation.x += 0.005;
+                currentMesh.rotation.y += 0.01;
+            }
+            renderer.render(scene, camera);
+        }
+
+        function toggle3DRotation() {
+            autoRotate = !autoRotate;
+        }
+
+        function onWindowResize() {
+            if (!renderer) return;
+            const canvas = document.getElementById('threeCanvas');
+            const width = canvas.parentElement.clientWidth;
+            const height = canvas.parentElement.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+
+        // AI Chat Engine
+        function toggleAiModal() {
+            document.getElementById('aiModal').classList.toggle('hidden');
+        }
+
+        function sendAiMessage() {
+            const input = document.getElementById('aiInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            const chatBox = document.getElementById('aiChatMessages');
+            
+            // User Message
+            chatBox.innerHTML += `
+                <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+                    <div class="bg-brand-500 text-white p-3 rounded-2xl text-xs">${txt}</div>
+                </div>
+            `;
+
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Simulated AI Response
+            setTimeout(() => {
+                chatBox.innerHTML += `
+                    <div class="flex space-x-3 max-w-[85%]">
+                        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs text-white shrink-0">AI</div>
+                        <div class="bg-slate-800/80 p-3 rounded-2xl text-xs text-slate-200 border border-slate-700/50">
+                            Here is the high-tech explanation for <b>Class ${currentClass} (${currentStream.toUpperCase()})</b>:
+                            <br><br>
+                            ⚡ <i>Concept Highlight:</i> ${txt} is governed by fundamental equations. Remember to check previous year questions in the Vault section!
+                        </div>
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
+        }
+
+        // Quiz Engine Modal
+        function launchQuiz(title) {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = `
+                <div class="space-y-4 text-left">
+                    <span class="text-xs font-mono text-amber-400 uppercase">Live Practice Session</span>
+                    <h3 class="font-bold text-white text-lg">${title}</h3>
+                    
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-xs text-slate-200">Q1: Which law states that induced electromotive force is directly proportional to the rate of change of magnetic flux?</p>
+                        <div class="space-y-1.5 pt-2">
+                            <button onclick="selectOption(this)" class="w-full text-left p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">A) Lenz's Law</button>
+                            <button onclick="selectOption(this)" class="w-full text-left p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">B) Faraday's Law of Induction</button>
+                            <button onclick="selectOption(this)" class="w-full text-left p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">C) Ampere's Circuital Law</button>
+                        </div>
+                    </div>
+
+                    <button onclick="submitQuiz()" class="w-full py-2.5 rounded-xl bg-amber-400 font-bold text-slate-950 text-xs">Submit Answers</button>
+                </div>
+            `;
+            openModal('quizModal');
+        }
+
+        function selectOption(btn) {
+            btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('bg-brand-500', 'text-white'));
+            btn.classList.add('bg-brand-500', 'text-white');
+        }
+
+        function submitQuiz() {
+            alert('🎉 Quiz Submitted! Score: 100% (+50 XP Earned)');
+            closeModal('quizModal');
+        }
+
+        function startInstantTest() {
+            launchQuiz("Instant 5-Min Adaptive Quiz");
+        }
+
+        // Pomodoro Timer & Tone Audio Logic
+        let pomoInterval;
+        let pomoTime = 1500; // 25 mins
+        let pomoRunning = false;
+
+        function togglePomodoroTimer() {
+            const btn = document.getElementById('pomoStartBtn');
+            if (!pomoRunning) {
+                pomoRunning = true;
+                btn.textContent = "PAUSE";
+                pomoInterval = setInterval(() => {
+                    pomoTime--;
+                    updatePomoDisplay();
+                    if (pomoTime <= 0) {
+                        clearInterval(pomoInterval);
+                        alert("Focus Session Complete! Take a 5 min break.");
+                    }
+                }, 1000);
+            } else {
+                pomoRunning = false;
+                btn.textContent = "RESUME";
+                clearInterval(pomoInterval);
+            }
+        }
+
+        function resetPomodoroTimer() {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoTime = 1500;
+            updatePomoDisplay();
+            document.getElementById('pomoStartBtn').textContent = "START FOCUS";
+        }
+
+        function updatePomoDisplay() {
+            const m = Math.floor(pomoTime / 60).toString().padStart(2, '0');
+            const s = (pomoTime % 60).toString().padStart(2, '0');
+            const str = `${m}:${s}`;
+            document.getElementById('pomoDisplay').textContent = str;
+            document.getElementById('pomoSidebarTime').textContent = str;
+        }
+
+        // Tone.js Lo-Fi Ambient Sound Synth
+        let noiseSynth = null;
+        let playingAudio = null;
+
+        function toggleAudio(type) {
+            Tone.start();
+            if (playingAudio === type) {
+                if (noiseSynth) noiseSynth.stop();
+                playingAudio = null;
+                return;
+            }
+
+            if (noiseSynth) noiseSynth.stop();
+
+            if (type === 'rain') {
+                noiseSynth = new Tone.Noise("pink").start();
+                const filter = new Tone.Filter(800, "lowpass").toDestination();
+                noiseSynth.connect(filter);
+                noiseSynth.volume.value = -20;
+            } else if (type === 'space') {
+                noiseSynth = new Tone.Noise("brown").start();
+                const filter = new Tone.Filter(200, "lowpass").toDestination();
+                noiseSynth.connect(filter);
+                noiseSynth.volume.value = -12;
+            }
+            playingAudio = type;
+        }
+
+        // Live Class Modal Handlers
+        function openLiveClassModal(title) {
+            document.getElementById('liveModalTitle').textContent = title;
+            openModal('liveClassModal');
+        }
+
+        function sendLiveChatMessage() {
+            const input = document.getElementById('liveChatInput');
+            const val = input.value.trim();
+            if (!val) return;
+            const container = document.getElementById('liveChatMessages');
+            container.innerHTML += `<p><span class="font-bold text-amber-400">You:</span> ${val}</p>`;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Modal Utility Helpers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
